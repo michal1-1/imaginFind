@@ -13,3 +13,4 @@ venv/
 *.bak
 *.swp
 *.swo
+models/MiniLM-L6-v2/pytorch_model.bin

@@ -5,26 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="68494d23-e6b2-4a7f-8bd9-660f756030b0" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/fastApi.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/db/Database_Access.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/db/Database_Setup.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/image_utils.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/MiniLM-L6-v2/config.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/MiniLM-L6-v2/pytorch_model.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/MiniLM-L6-v2/sentence_bert_config.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/MiniLM-L6-v2/special_tokens_map.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/MiniLM-L6-v2/tokenizer.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/MiniLM-L6-v2/tokenizer_config.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/MiniLM-L6-v2/vocab.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/search_engine.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test_main.http" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/text_encoder.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -123,7 +105,7 @@
       <workItem from="1746714654480" duration="8627000" />
       <workItem from="1746900586615" duration="17878000" />
       <workItem from="1746982171623" duration="2580000" />
-      <workItem from="1746989617432" duration="4561000" />
+      <workItem from="1746989617432" duration="7673000" />
     </task>
     <servers />
   </component>
