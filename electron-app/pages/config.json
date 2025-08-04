@@ -1,0 +1,10 @@
+{
+  "user_images_path": "D:\\תמונות\\פורים תשעט",
+  "coco_mode": "remote",
+  "coco_local_path": "D:/coco/val2017",
+  "last_updated": "2025-06-14T20:14:45.899Z",
+  "auto_scan_skipped": false,
+  "auto_scan_enabled": true,
+  "auto_scan_setup_date": "2025-06-15T00:43:44.466Z",
+  "auto_scan_task_name": "background-scanner"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "electron-app",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron .",
+    "tailwind": "tailwindcss -i ./pages/input.css -o pages/style1.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michal1-1/imaginFind_bert.git"
+  },
+  "private": true,
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/michal1-1/imaginFind_bert/issues"
+  },
+  "homepage": "https://github.com/michal1-1/imaginFind_bert#readme",
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "electron": "^36.2.1",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^3.3.3"
+  },
+  "description": ""
+}

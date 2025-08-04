@@ -1,33 +1,41 @@
-from fastapi import FastAPI, HTTPException, UploadFile, Form, File
-from fastapi.responses import PlainTextResponse
-from text_encoder import encode_text
-from db.Database_Access import add_images
-import shutil
-import os
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from routes.image_routes import router as image_router
+from routes.custom_search_routes import router as custom_search_router
+from routes.coco_image_routes import router as coco_image_router
+from routes.search_routes import router as search_router
+from routes.clustering_routes import router as clustering_router
+from routes import daily_routes
+from routes import caption_suggestions
+from routes.history_routes import router as history_router
+from routes.chatbot_routes import router as chatbot_router
+from routes import user_folder_routes
+from dotenv import load_dotenv
+load_dotenv()
+
+
 app = FastAPI()
-@app.get("/", response_class=PlainTextResponse)
-def hello_world():
-    return "Hello World!"
-@app.post("/encode")
-def encode(request: dict):
-    text = request.get("text")
-    if not text:
-        raise HTTPException(status_code=400, detail="Missing text")
-    vector = encode_text(text)
-    return {"embedding": vector.tolist()}
 
-@app.post("/add_image")
-def add_image_to_db(text: str = Form(...), image: UploadFile = File(...)):
-    if not text or not image:
-        raise HTTPException(status_code=400, detail="Missing text or image")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-    os.makedirs("temp_images", exist_ok=True)
-    image_path = os.path.join("temp_images", image.filename)
-    with open(image_path, "wb") as buffer:
-        shutil.copyfileobj(image.file, buffer)
+app.include_router(search_router, prefix="/search", tags=["search"])
+app.include_router(image_router)
+app.include_router(custom_search_router, prefix="/custom", tags=["Custom Search"])
+app.include_router(coco_image_router)
+app.include_router(search_router)
+app.include_router(clustering_router)
+app.include_router(caption_suggestions.router)
+app.include_router(user_folder_routes.router)
+app.include_router(daily_routes.router)
+app.include_router(history_router)
+app.include_router(chatbot_router)
 
-    vector = encode_text(text)
-
-    add_images(caption=text, embedding=vector.tolist(), image_path=image_path)
-
-    return {"message": "Image uploaded and added successfully"}
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=8001)

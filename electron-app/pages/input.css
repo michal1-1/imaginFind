@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .search-button {
+    @apply px-6 py-2 bg-teal-500 text-white font-semibold rounded-xl shadow-md hover:bg-teal-600 transition duration-300;
+  }
+}

@@ -1,0 +1,247 @@
+const fs = require("fs");
+const path = require("path");
+const configPath = path.join(__dirname, "config.json");
+let folderPath = "";
+if (fs.existsSync(configPath)) {
+    const data = fs.readFileSync(configPath, "utf8");
+    const config = JSON.parse(data);
+    folderPath = config.folderPath;
+}
+window.addEventListener("DOMContentLoaded", () => {
+    const queryInput = document.getElementById("search-input");
+    const resultsContainer = document.getElementById("results");
+ let loadingDiv = document.getElementById("loading");
+    if (!loadingDiv) {
+        loadingDiv = document.createElement("div");
+        loadingDiv.id = "loading";
+        loadingDiv.style.cssText = `
+            display: none;
+            text-align: center;
+            padding: 1.5rem;
+            margin: 1rem;
+            background: linear-gradient(135deg, #99f6e4, #5eead4);
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.2);
+            color: #0f172a;
+            font-weight: 600;
+            font-size: 1.05rem;
+            animation: pulse 2s infinite;
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        `;
+        loadingDiv.innerHTML = `
+            <div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
+                <div style="
+                    width: 24px;
+                    height: 24px;
+                    border: 3px solid rgba(0,0,0,0.1);
+                    border-top: 3px solid #0f172a;
+                    border-radius: 50%;
+                    animation: spin 1s linear infinite;
+                "></div>
+                <span>Loading awesome results...</span>
+            </div>
+        `;
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            @keyframes pulse {
+                0%, 100% { transform: scale(1); opacity: 0.9; }
+                50% { transform: scale(1.02); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+        resultsContainer.parentNode.insertBefore(loadingDiv, resultsContainer);
+    }
+ document.getElementById("search-personal-button").addEventListener("click", async () => {
+        const query = queryInput.value.trim();
+
+        if (!query) {
+            showStyledAlert("Please enter a search query", "warning");
+            return;
+        }
+
+        let folder = "";
+        try {
+            const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+            folder = config.user_images_path;
+        } catch (err) {
+            console.error("⚠️ config.json read error:", err);
+        }
+
+        if (!folder) {
+            showStyledAlert("No folder selected. Please set it in Settings", "error");
+            return;
+        }
+
+        try {
+            loadingDiv.style.display = "block";
+            resultsContainer.innerHTML = "";
+            resultsContainer.style.opacity = "0.5";
+
+            const url = `http://localhost:8001/custom/search_folder?query=${encodeURIComponent(query)}&folder_path=${encodeURIComponent(folder)}`;
+            console.log("🔗 Fetching URL:", url);
+
+            const response = await fetch(url);
+            const data = await response.json();
+            console.log("✅ Results received:", data);
+
+            displaySearchResults(data.results);
+        } catch (error) {
+            console.error("❌ Search request error:", error);
+            showStyledAlert("An error occurred during search", "error");
+        } finally {
+            loadingDiv.style.display = "none";
+            resultsContainer.style.opacity = "1";
+        }
+    });
+
+    // 🖼️ הצגת תוצאות החיפוש
+    function displaySearchResults(results) {
+        resultsContainer.innerHTML = "";
+
+        if (!results || results.length === 0) {
+            resultsContainer.innerHTML = `
+                <div style="
+                    text-align: center;
+                    padding: 3rem;
+                    background: linear-gradient(135deg, #fef9c3, #fde68a);
+                    border-radius: 20px;
+                    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+                    color: #78350f;
+                    font-weight: 600;
+                    font-size: 1.1rem;
+                ">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+                    No matching results found.
+                    <div style="font-size: 0.9rem; opacity: 0.8; margin-top: 0.5rem;">Try different keywords</div>
+                </div>
+            `;
+            return;
+        }
+
+        results.forEach((result, index) => {
+            const card = document.createElement("div");
+            card.style.cssText = `
+                background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+                border-radius: 16px;
+                box-shadow: 0 10px 24px rgba(0, 0, 0, 0.05);
+                padding: 1.5rem;
+                transition: all 0.3s ease-in-out;
+                border: 1px solid #e2e8f0;
+                animation: slideUp 0.6s ease-out ${index * 0.1}s both;
+                position: relative;
+                overflow: hidden;
+            `;
+
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-6px) scale(1.015)';
+                card.style.boxShadow = '0 16px 32px rgba(0, 0, 0, 0.08)';
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) scale(1)';
+                card.style.boxShadow = '0 10px 24px rgba(0, 0, 0, 0.05)';
+            });
+
+            const img = document.createElement("img");
+            img.src = `http://localhost:8001/image/?filename=${encodeURIComponent(result.filename)}&folder_path=${encodeURIComponent(result.path)}`;
+            img.alt = result.caption;
+            img.style.cssText = `
+                width: 100%;
+                height: 12rem;
+                object-fit: cover;
+                border-radius: 12px;
+                margin-bottom: 1rem;
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+            `;
+
+            const caption = document.createElement("p");
+            caption.textContent = result.caption;
+            caption.style.cssText = `
+                font-size: 0.95rem;
+                color: #334155;
+                line-height: 1.6;
+                margin-bottom: 0.75rem;
+                font-weight: 500;
+            `;
+
+            const score = document.createElement("div");
+            score.style.cssText = `
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                background: #2dd4bf;
+                color: white;
+                padding: 0.4rem 1rem;
+                border-radius: 50px;
+                font-size: 0.8rem;
+                font-weight: 600;
+                box-shadow: 0 4px 12px rgba(45, 212, 191, 0.3);
+            `;
+            score.innerHTML = `<span>⭐</span> ${result.score}`;
+
+            card.appendChild(img);
+            card.appendChild(caption);
+            card.appendChild(score);
+            resultsContainer.appendChild(card);
+        });
+
+        const slideUpAnimation = document.createElement('style');
+        slideUpAnimation.textContent = `
+            @keyframes slideUp {
+                from { opacity: 0; transform: translateY(30px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        `;
+        document.head.appendChild(slideUpAnimation);
+    }
+ function showStyledAlert(message, type = "info") {
+        const colors = {
+            warning: { bg: "linear-gradient(135deg, #fde68a, #facc15)", icon: "⚠️" },
+            error:   { bg: "linear-gradient(135deg, #fca5a5, #ef4444)", icon: "❌" },
+            info:    { bg: "linear-gradient(135deg, #93c5fd, #3b82f6)", icon: "ℹ️" }
+        };
+        const alertDiv = document.createElement("div");
+        alertDiv.style.cssText = `
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 1000;
+            background: ${colors[type].bg};
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+            font-weight: 600;
+            animation: slideInRight 0.5s ease-out;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        `;
+
+        alertDiv.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <span style="font-size: 1.2rem;">${colors[type].icon}</span>
+                <span>${message}</span>
+            </div>
+        `;
+
+        const slideAnimation = document.createElement('style');
+        slideAnimation.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(slideAnimation);
+
+        document.body.appendChild(alertDiv);
+        setTimeout(() => {
+            alertDiv.style.animation = "slideInRight 0.5s ease-out reverse";
+            setTimeout(() => alertDiv.remove(), 500);
+        }, 4000);
+    }
+});

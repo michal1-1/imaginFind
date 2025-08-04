@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cluster Results - ImaginFind</title>
+  <script defer src="clusters.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 50%, #f3e8ff 100%);
+      min-height: 100vh;
+    }
+
+    /* Navigation tabs */
+    .nav-container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .nav-header {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      color: white;
+      padding: 20px 24px;
+      text-align: center;
+    }
+
+    .nav-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+      overflow-x: auto;
+      padding: 8px;
+      gap: 4px;
+    }
+
+    .nav-tab {
+      background: white;
+      border: 2px solid #e2e8f0;
+      color: #64748b;
+      padding: 12px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 120px;
+      justify-content: center;
+    }
+
+    .nav-tab:hover {
+      border-color: #3b82f6;
+      background: #f0f9ff;
+      color: #1e40af;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+    }
+
+    .nav-tab.active {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      border-color: #1d4ed8;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    }
+
+    .nav-tab .count {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .nav-tab.active .count {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Enhanced cards */
+    .cluster-card {
+      transition: all 0.3s ease;
+      border: 1px solid #e2e8f0;
+    }
+
+    .cluster-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+      border-color: #3b82f6;
+    }
+
+    /* Better image grid */
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .image-item {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #f8fafc;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .image-item:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .image-item img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .image-item:hover img {
+      transform: scale(1.1);
+    }
+
+    /* Caption overlay */
+    .image-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,0.8));
+      color: white;
+      padding: 12px 8px 8px;
+      font-size: 0.75rem;
+      line-height: 1.2;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .image-item:hover .image-caption {
+      opacity: 1;
+    }
+
+    /* Stats cards */
+    .stat-card {
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Loading animation */
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      margin: 20px;
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid #e2e8f0;
+      border-top: 4px solid #3b82f6;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Back button */
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: white;
+      color: #374151;
+      padding: 12px 20px;
+      border-radius: 12px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      z-index: 1000;
+      border: 1px solid #e2e8f0;
+    }
+
+    .back-btn:hover {
+      background: #f9fafb;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Category content animations */
+    .category-content {
+      animation: fadeSlideIn 0.5s ease-out;
+    }
+
+    @keyframes fadeSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Empty state for category */
+    .empty-category {
+      text-align: center;
+      padding: 60px 20px;
+      background: white;
+      border-radius: 20px;
+      border: 2px dashed #e2e8f0;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .image-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
+      }
+
+      .image-item img {
+        height: 120px;
+      }
+
+      .nav-tabs {
+        justify-content: flex-start;
+      }
+
+      .nav-tab {
+        min-width: 100px;
+        padding: 10px 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .image-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .nav-tab {
+        min-width: 80px;
+        padding: 8px 12px;
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans">
+
+  <!-- Back Button -->
+  <a href="index.html" class="back-btn">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+    </svg>
+    <span class="font-medium">Back to Search</span>
+  </a>
+
+  <div class="container mx-auto p-6 pt-20">
+    <h1 class="text-4xl font-bold mb-8 text-center text-gray-800">🧠 Smart Image Clusters</h1>
+
+    <!-- Loading State -->
+    <div id="loadingState" class="loading">
+      <div class="spinner"></div>
+      <h2 class="text-xl font-semibold text-gray-700 mb-2">Loading Clusters...</h2>
+      <p class="text-gray-500">This may take a moment while processing your images</p>
+    </div>
+
+    <!-- Navigation Container -->
+    <div id="navigationContainer" class="nav-container hidden">
+      <div class="nav-header">
+        <h2 class="text-xl font-bold">📂 Browse Categories</h2>
+        <p class="text-blue-100 text-sm mt-1">Click on a category to explore its clusters</p>
+      </div>
+
+      <div class="nav-tabs" id="categoryTabs">
+        <!-- Category tabs will be inserted here -->
+      </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div id="statsSection" class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8 hidden">
+      <div class="stat-card">
+        <div class="text-3xl font-bold text-blue-600" id="totalCategories">0</div>
+        <div class="text-sm text-gray-600 mt-1">Categories</div>
+      </div>
+      <div class="stat-card">
+        <div class="text-3xl font-bold text-green-600" id="currentCategoryClusters">0</div>
+        <div class="text-sm text-gray-600 mt-1">Clusters in Category</div>
+      </div>
+      <div class="stat-card">
+        <div class="text-3xl font-bold text-purple-600" id="currentCategoryImages">0</div>
+        <div class="text-sm text-gray-600 mt-1">Images in Category</div>
+      </div>
+      <div class="stat-card">
+        <div class="text-3xl font-bold text-orange-600" id="avgPerCluster">0</div>
+        <div class="text-sm text-gray-600 mt-1">Avg per Cluster</div>
+      </div>
+    </div>
+
+    <!-- Category Content Container -->
+    <div id="categoryContent" class="hidden">
+      <!-- Selected category content will be displayed here -->
+    </div>
+
+    <!-- Error State -->
+    <div id="errorState" class="text-center py-20 hidden">
+      <div class="bg-red-50 border border-red-200 rounded-lg p-8 max-w-2xl mx-auto">
+        <div class="text-6xl mb-4">❌</div>
+        <h2 class="text-2xl font-bold text-red-800 mb-4">Error Loading Clusters</h2>
+        <p class="text-red-700 mb-4" id="errorMessage">Failed to load clusters</p>
+        <div class="bg-white rounded p-4 mt-4 text-left">
+          <strong class="text-red-800">Common Issues:</strong>
+          <ul class="list-disc list-inside mt-2 text-sm text-gray-700">
+            <li>Make sure the API server is running on port 8001</li>
+            <li>Check if you have images in your database</li>
+            <li>Verify that classifier model is trained and saved</li>
+            <li>Check server logs for detailed error messages</li>
+          </ul>
+        </div>
+        <button onclick="fetchClusters()" class="mt-4 bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors">
+          🔄 Retry
+        </button>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="text-center py-20 hidden">
+      <div class="text-6xl mb-4">🧠</div>
+      <h2 class="text-3xl font-bold text-gray-700 mb-4">No Clusters Available</h2>
+      <p class="text-gray-500 mb-6">No clustering data found.</p>
+      <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 max-w-md mx-auto">
+        <h3 class="font-semibold text-yellow-800 mb-3">To create clusters:</h3>
+        <ol class="text-sm text-yellow-700 list-decimal list-inside space-y-1 text-left">
+          <li>Add training images using save_clusters_to_db.py</li>
+          <li>Train the classifier using cluster_trainer.py</li>
+          <li>Refresh this page</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

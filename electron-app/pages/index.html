@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Image Search App</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Playfair Display', 'Georgia', serif;
+      background: linear-gradient(135deg,
+        #ffecd2 0%,
+        #fcb69f 20%,
+        #ffecd2 40%,
+        #a8edea 60%,
+        #fed6e3 80%,
+        #ffecd2 100%);
+      background-size: 300% 300%;
+      animation: dreamyFlow 20s ease infinite;
+      min-height: 100vh;
+      color: #2c1810;
+      line-height: 1.7;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    @keyframes dreamyFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Artistic floating elements */
+    .art-element {
+      position: fixed;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .art-element::before {
+      content: '✦';
+      font-size: 20px;
+      color: rgba(255, 107, 107, 0.3);
+      animation: sparkle 8s linear infinite;
+    }
+
+    .art-element:nth-child(1) { top: 15%; left: 10%; animation-delay: 0s; }
+    .art-element:nth-child(2) { top: 25%; right: 15%; animation-delay: 2s; }
+    .art-element:nth-child(3) { bottom: 30%; left: 20%; animation-delay: 4s; }
+    .art-element:nth-child(4) { bottom: 20%; right: 25%; animation-delay: 6s; }
+
+    .art-element:nth-child(2)::before { content: '✧'; color: rgba(108, 92, 231, 0.3); }
+    .art-element:nth-child(3)::before { content: '❋'; color: rgba(34, 197, 94, 0.3); }
+    .art-element:nth-child(4)::before { content: '✾'; color: rgba(251, 146, 60, 0.3); }
+
+    @keyframes sparkle {
+      0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.3; }
+      50% { transform: scale(1.5) rotate(180deg); opacity: 0.8; }
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 100px 24px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 80px;
+      position: relative;
+    }
+
+    h1 {
+      font-size: 72px;
+      font-weight: 300;
+      color: #2c1810;
+      margin-bottom: 16px;
+      letter-spacing: -1px;
+      text-shadow: 0 2px 10px rgba(44, 24, 16, 0.1);
+      font-style: italic;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: #8b5a3c;
+      font-weight: 400;
+      text-transform: lowercase;
+      letter-spacing: 2px;
+      font-family: 'Georgia', serif;
+      position: relative;
+    }
+
+    .subtitle::before,
+    .subtitle::after {
+      content: '⸺';
+      color: #d4af37;
+      margin: 0 20px;
+      font-size: 20px;
+    }
+
+    .search-section {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(15px);
+      padding: 60px;
+      border-radius: 30px;
+      margin-bottom: 60px;
+      position: relative;
+      box-shadow:
+        0 20px 60px rgba(44, 24, 16, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .search-section::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #f9ca24);
+      border-radius: 32px;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .search-section:hover::before {
+      opacity: 0.3;
+    }
+
+    .search-section:hover {
+      transform: translateY(-5px);
+      box-shadow:
+        0 30px 80px rgba(44, 24, 16, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+
+    .search-input-wrapper {
+      max-width: 650px;
+      margin: 0 auto 50px;
+      position: relative;
+    }
+
+    #search-input {
+      width: 100%;
+      padding: 24px 30px;
+      border-radius: 25px;
+      border: 2px solid transparent;
+      background: rgba(255, 255, 255, 0.9);
+      font-size: 18px;
+      font-family: 'Georgia', serif;
+      color: #2c1810;
+      transition: all 0.3s ease;
+      outline: none;
+      box-shadow: inset 0 2px 8px rgba(44, 24, 16, 0.05);
+    }
+
+    #search-input::placeholder {
+      color: #8b5a3c;
+      font-style: italic;
+    }
+
+    #search-input:focus {
+      border: 2px solid #ff6b6b;
+      background: rgba(255, 255, 255, 1);
+      box-shadow:
+        inset 0 2px 8px rgba(44, 24, 16, 0.05),
+        0 0 0 8px rgba(255, 107, 107, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .search-button {
+      min-width: 220px;
+      height: 60px;
+      padding: 0 40px;
+      font-size: 16px;
+      font-weight: 500;
+      font-family: 'Georgia', serif;
+      border-radius: 30px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      text-transform: capitalize;
+      letter-spacing: 0.5px;
+    }
+
+    .search-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      transition: left 0.8s ease;
+    }
+
+    .search-button:hover::before {
+      left: 100%;
+    }
+
+    #search-personal-button {
+      background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+      color: white;
+      border: 2px solid rgba(255, 107, 107, 0.3);
+      box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+    }
+
+    #search-personal-button:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 15px 35px rgba(255, 107, 107, 0.4);
+      border-color: rgba(255, 107, 107, 0.6);
+    }
+
+    #search-coco-button {
+      background: linear-gradient(135deg, #4ecdc4, #44a08d);
+      color: white;
+      border: 2px solid rgba(78, 205, 196, 0.3);
+      box-shadow: 0 8px 25px rgba(78, 205, 196, 0.3);
+    }
+
+    #search-coco-button:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 15px 35px rgba(78, 205, 196, 0.4);
+      border-color: rgba(78, 205, 196, 0.6);
+    }
+
+    #view-clusters-button {
+      background: linear-gradient(135deg, #a8edea, #fed6e3);
+      color: #2c1810;
+      border: 2px solid rgba(168, 237, 234, 0.5);
+      box-shadow: 0 8px 25px rgba(168, 237, 234, 0.3);
+    }
+
+    #view-clusters-button:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 15px 35px rgba(168, 237, 234, 0.4);
+      border-color: rgba(168, 237, 234, 0.8);
+    }
+
+    #results {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 30px;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .container {
+        padding: 60px 20px;
+      }
+
+      h1 {
+        font-size: 48px;
+      }
+
+      .search-section {
+        padding: 40px 28px;
+        border-radius: 25px;
+      }
+
+      .search-button {
+        width: 100%;
+        min-width: auto;
+      }
+
+      #results {
+        grid-template-columns: 1fr;
+      }
+
+      .art-element {
+        display: none;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 36px;
+      }
+
+      .search-section {
+        padding: 32px 20px;
+      }
+
+      #search-input {
+        padding: 20px 24px;
+        font-size: 16px;
+      }
+
+      .search-button {
+        height: 54px;
+        font-size: 15px;
+      }
+    }
+
+    .search-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .search-button:active {
+      transform: translateY(-1px) scale(0.98);
+    }
+
+    /* Additional artistic touches */
+    .search-section::after {
+      content: '✨';
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 24px;
+      color: #d4af37;
+      animation: twinkle 3s ease-in-out infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; transform: rotate(0deg); }
+      50% { opacity: 1; transform: rotate(15deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="art-element"></div>
+  <div class="art-element"></div>
+  <div class="art-element"></div>
+  <div class="art-element"></div>
+
+  <div class="container">
+    <div class="header">
+      <h1>ImaginFind</h1>
+      <div class="subtitle">⸺ Why imagine when you can ImaginFind
+ ⸺</div>
+    </div>
+
+    <div class="search-section">
+      <div class="search-input-wrapper">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Enter a description..."
+        />
+      </div>
+
+      <div class="button-group">
+        <button id="search-personal-button" class="search-button">
+          Search Personal Photos
+        </button>
+        <button id="search-coco-button" class="search-button">
+          Search COCO
+        </button>
+        <button id="view-clusters-button" class="search-button">
+          View Clusters
+        </button>
+        <button id="history-button" class="search-button">
+          View History
+        </button>
+
+      </div>
+    </div>
+
+    <div id="results"></div>
+  </div>
+  <div id="chat-toggle" title="שאל את ImaginBot">🤖</div>
+
+<!-- תיבת הצ'אט הקופצת -->
+<iframe id="chat-frame" src="../chat.html" style="display: none;"></iframe>
+
+<style>
+  #chat-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #26c6da, #ab47bc);
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    font-size: 28px;
+    text-align: center;
+    line-height: 60px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    z-index: 9999;
+    transition: transform 0.2s ease;
+  }
+
+  #chat-toggle:hover {
+    transform: scale(1.1);
+  }
+
+  #chat-frame {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 380px;
+    height: 500px;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+    z-index: 9998;
+  }
+</style>
+
+<script>
+  const toggle = document.getElementById("chat-toggle");
+  const frame = document.getElementById("chat-frame");
+
+  toggle.addEventListener("click", () => {
+    frame.style.display = frame.style.display === "none" ? "block" : "none";
+  });
+</script>
+
+  <script src="../renderer.js"></script>
+</body>
+</html>
+
