@@ -19,3 +19,6 @@ models
 *.bak
 *.swp
 *.swo
+venv310/
+.venv1/
+
