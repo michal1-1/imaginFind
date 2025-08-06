@@ -74,16 +74,16 @@ imaginFind/
 ## 📷 Screenshots
 
 ### 🔍 Home Page  
-![Home](screenshots/home.png)
+![Home](home.png)
 
 ### 🧠 Search Results  
-![Search](screenshots/search.png)
+![Search](search.png)
 
 ### 🗂️ Cluster View  
-![Clusters](screenshots/clusters.png)
+![Clusters](clusters.png)
 
 ### 📜 Search History  
-![History](screenshots/history.png)
+![History](history.png)
 
 ---
 
