@@ -45,25 +45,65 @@
 ## 📁 Project Structure
 ```
 imaginFind/
-├── server/
-│   ├── main.py — Main backend FastAPI application
-│   ├── routes/ — API route handlers
-│   ├── services/ — Business logic and AI integration
-│   └── db/ — Database models and migration scripts
-├── models/
-│   ├── blip2/ — BLIP2 captioning model files
-│   ├── classifier/ — Trained Logistic Regression model and related files
-│   └── word2vec/ — Word2Vec embeddings and utilities
-├── client/
-│   ├── index.html — Main frontend page
-│   ├── renderer.js — Frontend JavaScript logic
-│   ├── style1.css — Stylesheet for frontend
-│   ├── history.html — Page to display search history
-│   └── chat.html — Chatbot interface
-├── screenshots/ — Folder containing application screenshots
-│   ├── home.png
-│   ├── search.png
-│   ├── clusters.png
-│   └── history.png
-└── README.md — This documentation file
+├── server/ (FastAPI - Python)
+│   ├── routes/              # API endpoints
+│   ├── services/            # Search logic, embeddings, clustering
+│   └── db/                  # Database connection & models (PostgreSQL + pgvector)
+├── models/ (AI Models)
+│   ├── blip2/               # BLIP2 image captioning model
+│   ├── word2vec/            # Word2Vec embedding model
+│   └── classifier/          # Trained clustering model (e.g., Logistic Regression)
+├── client/ (Frontend)
+│   ├── index.html           # Main UI page
+│   ├── history.html         # Search history page
+│   ├── chat.html            # Chat interface
+│   ├── renderer.js          # JS logic
+│   └── style1.css           # Styles
+├── screenshots/             # UI Screenshots for README / documentation
+│   ├── home.png
+│   ├── search.png
+│   ├── clusters.png
+│   └── history.png
+└── README.md                # Project documentation
+
 ```
+
+
+---
+
+## 📷 Screenshots
+
+### 🔍 Home Page  
+![Home](screenshots/home.png)
+
+### 🧠 Search Results  
+![Search](screenshots/search.png)
+
+### 🗂️ Cluster View  
+![Clusters](screenshots/clusters.png)
+
+### 📜 Search History  
+![History](screenshots/history.png)
+
+---
+
+## 🧪 Example Use Case
+
+1. User uploads personal images.  
+2. The system generates captions for each image using BLIP2.  
+3. User types: `"a person riding a bike"`  
+4. Word2Vec compares the query with all image captions.  
+5. Results are ranked and shown with angle similarity.  
+6. User can view relevant clusters.  
+7. The search is saved in the history for reuse.
+
+---
+
+## 📦 Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/michal1-1/imaginFind.git
+cd imaginFind
+
