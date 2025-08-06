@@ -43,7 +43,7 @@
 ---
 
 ## 📁 Project Structure
-
+```
 imaginFind/
 ├── server/
 │   ├── main.py — Main backend FastAPI application
@@ -66,3 +66,4 @@ imaginFind/
 │   ├── clusters.png
 │   └── history.png
 └── README.md — This documentation file
+```
