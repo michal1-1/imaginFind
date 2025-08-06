@@ -128,5 +128,7 @@ cd client
 
 **📊 Admin dashboard and image analytics**
 
-🎥 Project Presentation
-👉 Click here to view the Canva presentation
+
+## 🎥 Project Presentation
+
+Watch the full presentation on [Canva](https://www.canva.com/design/DAGpkisJr9Q/ofLCqvlnQPimFWSgXpRNsg/edit?utm_content=DAGpkisJr9Q&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
