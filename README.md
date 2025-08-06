@@ -107,3 +107,26 @@ Clone the repository:
 git clone https://github.com/michal1-1/imaginFind.git
 cd imaginFind
 
+cd server
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\\Scripts\\activate
+pip install -r requirements.txt
+uvicorn main:app --reload
+
+cd client
+# Open index.html in browser or run with Electron
+
+```
+---
+
+## 🌟 Future Improvements
+**🌐 Multi-language support (Hebrew, Arabic, more)**
+
+**📱 Mobile version with live camera input**
+
+**🖼️ Visual-only search (no text needed)**
+
+**📊 Admin dashboard and image analytics**
+
+🎥 Project Presentation
+👉 Click here to view the Canva presentation
